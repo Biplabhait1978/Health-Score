@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  <title>Financial Health Score · complete solutions</title>
+  <!-- Font Awesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+      background: #f4f9ff;
+      padding: 16px 12px 40px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .container {
+      max-width: 1200px;
+      width: 100%;
+    }
+
+    .header-title {
+      text-align: center;
+      margin: 10px 0 25px;
+    }
+
+    .header-title h1 {
+      font-size: 2.2rem;
+      color: #063970;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+    }
+
+    .header-title p {
+      font-size: 1.2rem;
+      color: #1e4a6d;
+    }
+
+    /* two column layout for high & low scores */
+    .score-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-bottom: 30px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 36px;
+      padding: 28px 24px;
+      box-shadow: 0 20px 35px -8px rgba(0, 45, 70, 0.15);
+      border: 1px solid rgba(26, 127, 122, 0.15);
+      transition: transform 0.2s;
+      height: fit-content;
+    }
+
+    .card:hover {
+      transform: translateY(-6px);
+    }
+
+    .critical-card {
+      border-top: 8px solid #c0392b;
+    }
+
+    .excellent-card {
+      border-top: 8px solid #1d7a6b;
+    }
+
+    .score-badge {
+      display: inline-block;
+      font-size: 3rem;
+      font-weight: 800;
+      background: #f0f7fa;
+      padding: 10px 30px;
+      border-radius: 80px;
+      margin-bottom: 20px;
+      color: #1d3557;
+    }
+
+    .critical-badge {
+      background: #fdeae8;
+      color: #b13e2d;
+    }
+
+    .excellent-badge {
+      background: #d9f0ec;
+      color: #1d7a6b;
+    }
+
+    h2 {
+      font-size: 1.9rem;
+      margin: 20px 0 15px;
+      color: #0a2f4d;
+      border-left: 7px solid #2b6c9e;
+      padding-left: 16px;
+    }
+
+    h3 {
+      font-size: 1.5rem;
+      margin: 20px 0 12px;
+      color: #134b73;
+    }
+
+    h4 {
+      font-size: 1.3rem;
+      margin: 18px 0 8px;
+      color: #1a4c6e;
+    }
+
+    .warning-box {
+      background: #fef5f2;
+      border-left: 6px solid #e67e22;
+      padding: 20px;
+      border-radius: 24px;
+      margin: 20px 0;
+    }
+
+    .bullet-list {
+      list-style: none;
+      padding: 0;
+    }
+
+    .bullet-list li {
+      padding: 8px 0 8px 32px;
+      background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="%23c0392b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>') left center no-repeat;
+      background-size: 20px;
+      margin-bottom: 6px;
+    }
+
+    .check-list {
+      list-style: none;
+    }
+
+    .check-list li {
+      padding: 8px 0 8px 32px;
+      background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="%231d7a6b" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>') left center no-repeat;
+      background-size: 20px;
+    }
+
+    .day-box {
+      background: #eaf2f9;
+      border-radius: 28px;
+      padding: 18px;
+      margin: 15px 0;
+    }
+
+    .day-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .day-num {
+      background: #1d4d7c;
+      color: white;
+      font-weight: 700;
+      width: 50px;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 30px;
+      font-size: 1.2rem;
+      flex-shrink: 0;
+    }
+
+    .day-desc {
+      background: white;
+      padding: 14px 18px;
+      border-radius: 24px;
+      width: 100%;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+    }
+
+    .highlight {
+      background: #fcf2db;
+      padding: 16px;
+      border-radius: 24px;
+      font-weight: 500;
+      border-left: 5px solid #f39c12;
+    }
+
+    .footer-note {
+      text-align: center;
+      margin-top: 40px;
+      color: #2b4f6e;
+      background: white;
+      border-radius: 60px;
+      padding: 24px;
+      border: 1px solid #c4d8f0;
+    }
+
+    .btn {
+      background: #1d4d7c;
+      color: white;
+      border: none;
+      padding: 16px 28px;
+      border-radius: 50px;
+      font-size: 1.2rem;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 8px 0 #0b2a44;
+      transition: 0.05s linear;
+      margin: 20px auto;
+      display: inline-block;
+      text-decoration: none;
+    }
+
+    .btn:active {
+      transform: translateY(6px);
+      box-shadow: 0 2px 0 #0b2a44;
+    }
+
+    @media (max-width: 800px) {
+      .score-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <div class="header-title">
+    <h1>📊 Your Financial Health Score</h1>
+    <p>Complete recommendations from the financial pyramid</p>
+  </div>
+
+  <!-- Two-column layout: critical (left) and excellent (right) -->
+  <div class="score-grid">
+    <!-- LEFT CARD: Low score (20/100) critical -->
+    <div class="card critical-card">
+      <div class="score-badge critical-badge">20 / 100</div>
+      <h2 style="color:#b13e2d; border-left-color:#c0392b;">⚠️ CRITICAL FINANCIAL EMERGENCY</h2>
+      <p style="font-size:1.3rem; font-weight:600;">Your family is at extreme risk!</p>
+      <p>Your score of 20/100 indicates you are living on the edge of financial disaster. One medical emergency, one job loss, one accident can destroy everything you've built.</p>
+
+      <div class="warning-box">
+        <h4 style="margin-top:0;">💔 THE HARSH REALITY YOU'RE FACING RIGHT NOW:</h4>
+        <ul class="bullet-list">
+          <li>Your family has NO income - monthly expenses stop immediately</li>
+          <li>Children may DROP OUT of school/college - dreams shattered</li>
+          <li>Home loan EMIs will default - bank will auction your house</li>
+          <li>Medical emergency = 5-10 lakhs debt or selling assets at losses</li>
+          <li>Your spouse becomes financially helpless overnight</li>
+          <li>Retirement = depending on children, no dignity, no freedom</li>
+        </ul>
+        <p style="margin-top:15px;"><strong>This is NOT a prediction. This is what WILL happen without protection.</strong></p>
+      </div>
+
+      <h4>😰 DAILY SYMPTOMS YOU'RE ALREADY SUFFERING:</h4>
+      <ul class="bullet-list" style="margin-bottom:20px;">
+        <li>Sleeping nights worrying about money and future</li>
+        <li>Credit card debt cycle - paying minimum, interest mounting</li>
+        <li>Avoiding phone calls from loan recovery or bill collectors</li>
+        <li>Hiding financial stress from spouse and family</li>
+        <li>Compromising on children's education - cheaper schools, no coaching</li>
+        <li>Delaying medical checkups - fearing the cost of treatment</li>
+        <li>Job loss paranoia - one layoff and everything collapses</li>
+        <li>Renting forever - dream of own house dying every year</li>
+        <li>No retirement plan - forced to work at age 70+</li>
+        <li>Constant anxiety - every unexpected expense creates panic</li>
+      </ul>
+      <p class="highlight">Sound familiar? You're not alone, but you ARE in danger.</p>
+
+      <h4>⏰ TIMELINE OF DISASTER IF YOU DON'T ACT NOW:</h4>
+      <div class="day-box">
+        <div class="day-item"><span class="day-num">1Y</span><div class="day-desc"><strong>In 1 Year:</strong> Another year of zero savings. Insurance premiums increase with age. Health issues start appearing (30-40 age). Children's education costs jump 8-10%. You're now even MORE vulnerable.</div></div>
+        <div class="day-item"><span class="day-num">5Y</span><div class="day-desc"><strong>In 5 Years:</strong> Children enter expensive college years - 15-25 lakhs needed. No savings = education loans at 11-13% interest. Parents' medical needs increase. You're exhausted, stressed, and trapped.</div></div>
+        <div class="day-item"><span class="day-num">10Y</span><div class="day-desc"><strong>In 10 Years:</strong> Children's marriage = 20-30 lakhs. Still paying education loans. Own health deteriorating. Retirement only 10-15 years away but ZERO corpus. Living paycheck to paycheck at age 50.</div></div>
+        <div class="day-item"><span class="day-num">20Y</span><div class="day-desc"><strong>In 20 Years:</strong> Age 60-65, forced retirement. No pension, no savings, no investments. Monthly expenses 50,000+ but NO income. Dependent on children who have their own struggles. Medical bills mounting. This is your future.</div></div>
+      </div>
+
+      <h4>🚨 WHAT YOU MUST DO IN THE NEXT 7 DAYS:</h4>
+      <div class="day-box" style="background:#d9eaf5;">
+        <div class="day-item"><span class="day-num" style="background:#117a65;">1-2</span><div class="day-desc"><strong>Day 1-2:</strong> Get term life insurance quote (50 lakh-1 crore coverage = only ₹15,000/year). Apply immediately. Your family's survival depends on this.</div></div>
+        <div class="day-item"><span class="day-num" style="background:#117a65;">3-4</span><div class="day-desc"><strong>Day 3-4:</strong> Buy family floater health insurance (₹5-10 lakh). Compare online and purchase. One hospitalization will destroy your finances.</div></div>
+        <div class="day-item"><span class="day-num" style="background:#117a65;">5-6</span><div class="day-desc"><strong>Day 5-6:</strong> Open emergency fund account. Deposit ₹10,000 immediately. Commit to saving ₹5,000-10,000 monthly until you have 6 months expenses.</div></div>
+        <div class="day-item"><span class="day-num" style="background:#117a65;">7</span><div class="day-desc"><strong>Day 7:</strong> Book appointment with a CERTIFIED financial planner. Get a written financial plan covering insurance, emergency fund, children's education, retirement. Pay for expert advice - it will save you lakhs.</div></div>
+      </div>
+      <p style="font-weight:600;">These 7 days will determine your family's entire financial future. Don't delay another minute.</p>
+
+      <h4>🙋 WHY YOU NEED A FINANCIAL EXPERT NOW:</h4>
+      <ul class="check-list">
+        <li>Stop making costly mistakes - Wrong policies, high-fee products, tax losses</li>
+        <li>Get personalized plan - Based on YOUR income, goals, family situation</li>
+        <li>Save time and stress - Expert handles research, paperwork, follow-ups</li>
+        <li>Save ₹5-10 lakhs - Avoid wrong investments, optimize taxes, get better returns</li>
+        <li>Accountability partner - Someone to keep you on track, review quarterly</li>
+        <li>Navigate life changes - Job change, home purchase, child birth - expert guides you</li>
+      </ul>
+      <p><strong>Cost of advisor: ₹5,000-15,000/year. Cost of NOT having advisor: Lost opportunities worth ₹10-50 lakhs over lifetime.</strong></p>
+
+      <div class="highlight" style="background:#fae5e5; border-left-color:#b13e2d;">
+        <h4 style="color:#a93226;">⚠️ FINAL WARNING</h4>
+        <p>Every single day you delay, you're gambling with your family's future. You're ONE unexpected event away from financial ruin. Your children are watching you struggle. Your spouse is worried sick. You wake up anxious about money and go to bed stressed.</p>
+        <p>This assessment isn't meant to scare you - it's meant to SAVE you. Thousands of families have faced disasters because they ignored these warnings. Don't be another statistic.</p>
+        <p style="font-weight:800; font-size:1.3rem;">👉 TAKE ACTION TODAY. YOUR FAMILY IS COUNTING ON YOU.</p>
+      </div>
+    </div>
+
+    <!-- RIGHT CARD: High score (100/100) excellent -->
+    <div class="card excellent-card">
+      <div class="score-badge excellent-badge">100 / 100</div>
+      <h2 style="color:#1d7a6b; border-left-color:#1d7a6b;">🏆 EXCELLENT FINANCIAL HEALTH</h2>
+      <p style="font-size:1.3rem;">Congratulations! You're in the top 10%.</p>
+      <p>Your score of 100/100 places you among India's financially secure families. You have excellent protection, savings, and investment habits.</p>
+
+      <h4>💎 MAINTAIN & ENHANCE YOUR EXCELLENCE:</h4>
+      <ul class="check-list">
+        <li><strong>Annual review:</strong> Schedule yearly financial health check-up with advisor</li>
+        <li><strong>Rebalance portfolio:</strong> Adjust asset allocation as you age and goals approach</li>
+        <li><strong>Optimize returns:</strong> Review fund performance, eliminate underperformers</li>
+        <li><strong>Tax efficiency:</strong> Maximize Section 80C, 80D, NPS benefits (save ₹50,000+ tax)</li>
+        <li><strong>Stay updated:</strong> New investment options, tax laws, financial products</li>
+      </ul>
+
+      <h4>🚀 ADVANCED WEALTH STRATEGIES:</h4>
+      <ul class="check-list">
+        <li><strong>International diversification:</strong> Add US stocks, global funds (10-20% portfolio)</li>
+        <li><strong>Real estate investment:</strong> REITs or rental properties for passive income</li>
+        <li><strong>Alternative investments:</strong> Gold bonds, P2P lending (5-10% allocation)</li>
+        <li><strong>Estate planning:</strong> Will creation, nominee updates, succession planning</li>
+        <li><strong>Trust formation:</strong> For wealth preservation and smooth transfer to next generation</li>
+      </ul>
+
+      <h4>📈 WEALTH MULTIPLICATION OPPORTUNITIES:</h4>
+      <div class="day-box" style="background:#e3f2ed;">
+        <p><i class="fas fa-calculator" style="color:#1d7a6b;"></i> <strong>Maximize compounding:</strong> Every ₹1 lakh extra invested at age 40 becomes ₹4.3 lakhs by age 60 (12% return).</p>
+        <p><i class="fas fa-coins"></i> <strong>Tax arbitrage:</strong> Strategic withdrawals and investments can save ₹2-5 lakhs annually in high income brackets.</p>
+        <p><i class="fas fa-house-chimney"></i> <strong>Passive income streams:</strong> Build dividend portfolio or rental income to cover 30-50% of monthly expenses by retirement.</p>
+      </div>
+
+      <h4>🤝 GIVE BACK & INSPIRE:</h4>
+      <ul class="check-list">
+        <li><strong>Family education:</strong> Teach children about money management early</li>
+        <li><strong>Mentor others:</strong> Share your journey with friends and colleagues</li>
+        <li><strong>Philanthropic planning:</strong> Structured giving through CSR or charitable trusts</li>
+        <li><strong>Continuous learning:</strong> Attend seminars, read books, stay sharp</li>
+      </ul>
+      <div class="highlight" style="background:#d4efe9; border-left-color:#1d7a6b;">
+        <p style="font-size:1.4rem; font-weight:700;">🌟 KEEP UP THE EXCELLENT WORK!</p>
+        <p>You've built a strong financial foundation. Continue your disciplined approach, review regularly, and enjoy the peace of mind that comes with financial security. Your family's future is bright! 🎉</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer updated: Bijoy Mazumder . Mohor Savings & Insurance Services -->
+  <div class="footer-note">
+    <p><i class="fas fa-user-check"></i> <strong>Bijoy Mazumder . Mohor Savings & Insurance Services</strong></p>
+    <p style="margin-top:10px;">Share your results and take charge of your financial future.</p>
+    <button class="btn" onclick="window.print()">🖨 Print this guide</button>
+  </div>
+</div>
+</body>
+</html>
